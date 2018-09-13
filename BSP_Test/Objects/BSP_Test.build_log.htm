@@ -21,12 +21,16 @@ Target DLL:      UL2CM3.DLL V1.160.3.0
 Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
-C:\Users\PANZERS\Desktop\BSP_Test\BSP_Test.uvprojx
+E:\program\BSP_Test\BSP_Test.uvprojx
 Project File Date:  09/06/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.10.1', folder: 'C:\Keil_v5\ARM\ARMCompiler6_10_1\Bin'
 Build target 'M100'
+assembling startup_M100.s...
+compiling BSP_Test.c...
+linking...
+Program Size: Code=23400 RO-data=4576 RW-data=272 ZI-data=13544  
 After Build - User command #1: C:\Keil_v5\ARM\ARMCompiler6_10_1\bin\fromelf.exe --bin -o .\Objects\BSP_Test.bin .\Objects\BSP_Test.axf
 ".\Objects\BSP_Test.axf" - 0 Error(s), 0 Warning(s).
 
@@ -72,9 +76,9 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ThinkTech::Device:Startup:1.0.0
-      Include file:  Device\M100\Include\system_M100.h
-      Include file:  Device\M100\Include\RTE_Device.h
       Source file:   Device\M100\Source\system_M100.c
+      Include file:  Device\M100\Include\RTE_Device.h
+      Include file:  Device\M100\Include\system_M100.h
       Source file:   Device\M100\Source\ARM\startup_M100.s
 
    * Component: ThinkTech::CMSIS Driver:USART:UART(PL011):1.0.0
@@ -82,26 +86,26 @@ Package Vendor: Keil
       Source file:   Drivers\USART\USART_MIZAR.c
 
    * Component: ThinkTech::CMSIS Driver:SPI:SSP(PL022):1.0.0
-      Source file:   Drivers\SSP\SSP_MIZAR.c
       Include file:  Drivers\SSP\SSP_MIZAR.h
+      Source file:   Drivers\SSP\SSP_MIZAR.c
 
    * Component: ThinkTech::CMSIS Driver:MISC:1.0.0
-      Source file:   Drivers\MISC\MISC_MIZAR.c
       Include file:  Drivers\MISC\MISC_MIZAR.h
+      Source file:   Drivers\MISC\MISC_MIZAR.c
 
    * Component: ThinkTech::CMSIS Driver:GPIO:1.0.0
       Source file:   Drivers\GPIO\GPIO_MIZAR.c
       Include file:  Drivers\GPIO\GPIO_MIZAR.h
 
    * Component: ThinkTech::CMSIS Driver:GPDMA:1.0.0
-      Source file:   Drivers\GPDMA\GPDMA_MIZAR.c
       Include file:  Drivers\GPDMA\GPDMA_MIZAR.h
+      Source file:   Drivers\GPDMA\GPDMA_MIZAR.c
 
    * Component: Keil.ARM Compiler::Compiler:I/O:STDOUT:User:1.2.0
-      Source file:   Template\stdout_display.c
-      Source file:   Template\stdout_USART.c
       Source file:   Source\retarget_io.c
+      Source file:   Template\stdout_USART.c
       Source file:   Template\stdout_user.c
+      Source file:   Template\stdout_display.c
 
    * Component: ARM::CMSIS:CORE:5.0.1
 
@@ -110,7 +114,7 @@ Package Vendor: Keil
 
    * Component: ::CMSIS Driver:SPI:2.2.0 (API)
       Include file:  CMSIS\Driver\Include\Driver_SPI.h
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

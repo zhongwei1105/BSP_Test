@@ -37,15 +37,15 @@ int main (void)
 	printf("OBD_ISO15765-4_Test\r\n");
 	printf("Please Send \"AT+HELP\"\r\n");
 		
-	TMR_Open(TMR_10MS_Base, true, TMR_10MS_Base_TIME);
+//	TMR_Open(TMR_10MS_Base, true, TMR_10MS_Base_TIME);
 	
 	while(1)
 	{
-		if(TMR_IsOut(TMR_10MS_Base) == true)	
-		{
-			TMR_Open(TMR_10MS_Base, true, TMR_10MS_Base_TIME);
-
-		}		
+//		if(TMR_IsOut(TMR_10MS_Base) == true)	
+//		{
+//			TMR_Open(TMR_10MS_Base, true, TMR_10MS_Base_TIME);
+//
+//		}		
 		
 		CMD_Drv();
 		ISO15765_4_Drv();
