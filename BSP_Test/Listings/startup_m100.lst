@@ -1,0 +1,1439 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ;/******************************************************
+                       ************************
+    2 00000000         ; * @file     startup_M100.s
+    3 00000000         ; * @brief    CMSIS Device System Source File for ThinkT
+                       ech M100 Device Series
+    4 00000000         ; * @version  V5.00
+    5 00000000         ; * @date     02. Dec 2017
+    6 00000000         ; ******************************************************
+                       ************************/
+    7 00000000         ;/*
+    8 00000000         ; * Copyright (c) 2017-2019 ThinkTech Limited. All right
+                       s reserved.
+    9 00000000         ; *
+   10 00000000         ; * SPDX-License-Identifier: Apache-2.0
+   11 00000000         ; *
+   12 00000000         ; * Licensed under the Apache License, Version 2.0 (the 
+                       License); you may
+   13 00000000         ; * not use this file except in compliance with the Lice
+                       nse.
+   14 00000000         ; * You may obtain a copy of the License at
+   15 00000000         ; *
+   16 00000000         ; * www.apache.org/licenses/LICENSE-2.0
+   17 00000000         ; *
+   18 00000000         ; * Unless required by applicable law or agreed to in wr
+                       iting, software
+   19 00000000         ; * distributed under the License is distributed on an A
+                       S IS BASIS, WITHOUT
+   20 00000000         ; * WARRANTIES OR CONDITIONS OF ANY KIND, either express
+                        or implied.
+   21 00000000         ; * See the License for the specific language governing 
+                       permissions and
+   22 00000000         ; * limitations under the License.
+   23 00000000         ; */
+   24 00000000         
+   25 00000000         ;/*
+   26 00000000         ;//-------- <<< Use Configuration Wizard in Context Menu
+                        >>> ------------------
+   27 00000000         ;*/
+   28 00000000         
+   29 00000000         
+   30 00000000         ; <h> Stack Configuration
+   31 00000000         ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   32 00000000         ; </h>
+   33 00000000         
+   34 00000000 00001000 
+                       Stack_Size
+                               EQU              0x00001000
+   35 00000000         
+   36 00000000                 AREA             STACK, NOINIT, READWRITE, ALIGN
+=3
+   37 00000000         Stack_Mem
+                               SPACE            Stack_Size
+   38 00001000         __initial_sp
+   39 00001000         
+   40 00001000         
+   41 00001000         ; <h> Heap Configuration
+   42 00001000         ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
+   43 00001000         ; </h>
+   44 00001000         
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   45 00001000 00000C00 
+                       Heap_Size
+                               EQU              0x00000C00
+   46 00001000         
+   47 00001000                 AREA             HEAP, NOINIT, READWRITE, ALIGN=
+3
+   48 00000000         __heap_base
+   49 00000000         Heap_Mem
+                               SPACE            Heap_Size
+   50 00000C00         __heap_limit
+   51 00000C00         
+   52 00000C00         
+   53 00000C00                 PRESERVE8
+   54 00000C00                 THUMB
+   55 00000C00         
+   56 00000C00         
+   57 00000C00         ; Vector Table Mapped to Address 0 at Reset
+   58 00000C00         
+   59 00000C00                 AREA             RESET, DATA, READONLY
+   60 00000000                 EXPORT           __Vectors
+   61 00000000                 EXPORT           __Vectors_End
+   62 00000000                 EXPORT           __Vectors_Size
+   63 00000000         
+   64 00000000 00000000 
+                       __Vectors
+                               DCD              __initial_sp ; Top of Stack
+   65 00000004 00000000        DCD              Reset_Handler ; Reset Handler
+   66 00000008 00000000        DCD              NMI_Handler ; NMI Handler
+   67 0000000C 00000000        DCD              HardFault_Handler ; Hard Fault 
+                                                            Handler
+   68 00000010 00000000        DCD              MemManage_Handler 
+                                                            ; MPU Fault Handler
+                                                            
+   69 00000014 00000000        DCD              BusFault_Handler 
+                                                            ; Bus Fault Handler
+                                                            
+   70 00000018 00000000        DCD              UsageFault_Handler ; Usage Faul
+                                                            t Handler
+   71 0000001C 00000000        DCD              0           ; Reserved
+   72 00000020 00000000        DCD              0           ; Reserved
+   73 00000024 00000000        DCD              0           ; Reserved
+   74 00000028 00000000        DCD              0           ; Reserved
+   75 0000002C 00000000        DCD              SVC_Handler ; SVCall Handler
+   76 00000030 00000000        DCD              DebugMon_Handler ; Debug Monito
+                                                            r Handler
+   77 00000034 00000000        DCD              0           ; Reserved
+   78 00000038 00000000        DCD              PendSV_Handler ; PendSV Handler
+                                                            
+   79 0000003C 00000000        DCD              SysTick_Handler 
+                                                            ; SysTick Handler
+   80 00000040         
+   81 00000040         ; External Interrupts
+   82 00000040 00000000        DCD              TRNG_IRQHandler ;  0: TRNG
+   83 00000044 00000000        DCD              SSP3_RT_IRQHandler ;  1: SSP3 R
+                                                            eceive Timeout
+   84 00000048 00000000        DCD              SSP3_ROR_IRQHandler ;  2: SSP3 
+                                                            Receive Overrun
+   85 0000004C 00000000        DCD              SSP3_TX_IRQHandler 
+                                                            ;  3: SSP3 Transmit
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+                                                            
+   86 00000050 00000000        DCD              SSP3_RX_IRQHandler 
+                                                            ;  4: SSP3 Receive
+   87 00000054 00000000        DCD              SSP3_COMBINE_IRQHandler 
+                                                            ;  5: SSP3 Combine
+   88 00000058 00000000        DCD              SSP2_RT_IRQHandler ;  6: SSP2 R
+                                                            eceive Timeout
+   89 0000005C 00000000        DCD              SSP2_ROR_IRQHandler ;  7: SSP2 
+                                                            Receive Overrun
+   90 00000060 00000000        DCD              SSP2_TX_IRQHandler 
+                                                            ;  8: SSP2 Transmit
+                                                            
+   91 00000064 00000000        DCD              SSP2_RX_IRQHandler 
+                                                            ;  9: SSP2 Receive
+   92 00000068 00000000        DCD              SSP2_COMBINE_IRQHandler 
+                                                            ; 10: SSP2 Combine
+   93 0000006C 00000000        DCD              SSP1_RT_IRQHandler ; 11: SSP1 R
+                                                            eceive Timeout
+   94 00000070 00000000        DCD              SSP1_ROR_IRQHandler ; 12: SSP1 
+                                                            Receive Overrun
+   95 00000074 00000000        DCD              SSP1_TX_IRQHandler 
+                                                            ; 13: SSP1 Transmit
+                                                            
+   96 00000078 00000000        DCD              SSP1_RX_IRQHandler 
+                                                            ; 14: SSP1 Receive
+   97 0000007C 00000000        DCD              SSP1_COMBINE_IRQHandler 
+                                                            ; 15: SSP1 Combine
+   98 00000080 00000000        DCD              SSP0_RT_IRQHandler ; 16: SSP0 R
+                                                            eceive Timeout
+   99 00000084 00000000        DCD              SSP0_ROR_IRQHandler ; 17: SSP0 
+                                                            Receive Overrun
+  100 00000088 00000000        DCD              SSP0_TX_IRQHandler 
+                                                            ; 18: SSP0 Transmit
+                                                            
+  101 0000008C 00000000        DCD              SSP0_RX_IRQHandler 
+                                                            ; 19: SSP0 Receive
+  102 00000090 00000000        DCD              SSP0_COMBINE_IRQHandler 
+                                                            ; 20: SSP0 Combine
+  103 00000094 00000000        DCD              GPDMA_COMBINE_IRQHandler 
+                                                            ; 21: GPDMA Combine
+                                                            
+  104 00000098 00000000        DCD              GPDMA_TC_IRQHandler ; 22: GPDMA
+                                                             Terminal Count
+  105 0000009C 00000000        DCD              GPDMA_ERR_IRQHandler 
+                                                            ; 23: GPDMA Error
+  106 000000A0 00000000        DCD              FLASH_CACHE_IRQHandler 
+                                                            ; 24: Flash Cache
+  107 000000A4 00000000        DCD              CC312_IRQHandler ; 25: CryptoCe
+                                                            ll-312
+  108 000000A8 00000000        DCD              PKI_RSA_IRQHandler 
+                                                            ; 26: Pki RSA
+  109 000000AC 00000000        DCD              TIMER_IRQHandler ; 27: Timer
+  110 000000B0 00000000        DCD              WDT_IRQHandler ; 28: Watchdog T
+                                                            imer
+  111 000000B4 00000000        DCD              0           ; 29: Reserved
+  112 000000B8 00000000        DCD              I2C1_IRQHandler ; 30: I2C 1
+  113 000000BC 00000000        DCD              I2C0_IRQHandler ; 31: I2C 0
+  114 000000C0 00000000        DCD              UART0_COMBINE_IRQHandler 
+                                                            ; 32: UART0 Combine
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+                                                            
+  115 000000C4 00000000        DCD              UART0_ERR_IRQHandler 
+                                                            ; 33: UART0 Error
+  116 000000C8 00000000        DCD              UART0_RT_IRQHandler ; 34: UART0
+                                                             Receive Timeout
+  117 000000CC 00000000        DCD              UART0_TX_IRQHandler ; 35: UART0
+                                                             Transmit
+  118 000000D0 00000000        DCD              UART0_RX_IRQHandler 
+                                                            ; 36: UART0 Receive
+                                                            
+  119 000000D4 00000000        DCD              UART0_MS_IRQHandler ; 37: UART0
+                                                             Modem Status
+  120 000000D8 00000000        DCD              GPIO0_IRQHandler ; 38: GPIO 0
+  121 000000DC 00000000        DCD              GPIO1_IRQHandler ; 39: GPIO 1
+  122 000000E0 00000000        DCD              GPIO2_IRQHandler ; 40: GPIO 2
+  123 000000E4 00000000        DCD              GPIO3_IRQHandler ; 41: GPIO 3
+  124 000000E8 00000000        DCD              GPIO4_IRQHandler ; 42: GPIO 4
+  125 000000EC 00000000        DCD              GPIO5_IRQHandler ; 43: GPIO 5
+  126 000000F0 00000000        DCD              GPIO6_IRQHandler ; 44: GPIO 6
+  127 000000F4 00000000        DCD              GPIO7_IRQHandler ; 45: GPIO 7
+  128 000000F8 00000000        DCD              GPIO_COMBINE_IRQHandler 
+                                                            ; 46: GPIO Combine
+  129 000000FC 00000000        DCD              eFLASH_IRQHandler ; 47: eFLASH
+  130 00000100 00000000        DCD              UART1_COMBINE_IRQHandler 
+                                                            ; 48: UART1 Combine
+                                                            
+  131 00000104 00000000        DCD              UART1_ERR_IRQHandler 
+                                                            ; 49: UART1 Error
+  132 00000108 00000000        DCD              UART1_RT_IRQHandler ; 50: UART1
+                                                             Receive Timeout
+  133 0000010C 00000000        DCD              UART1_TX_IRQHandler ; 51: UART1
+                                                             Transmit
+  134 00000110 00000000        DCD              UART1_RX_IRQHandler 
+                                                            ; 52: UART1 Receive
+                                                            
+  135 00000114 00000000        DCD              UART1_MS_IRQHandler ; 53: UART1
+                                                             Modem Status
+  136 00000118 00000000        DCD              TRNG0_IRQHandler ; 54: TRNG0
+  137 0000011C 00000000        DCD              TRNG1_IRQHandler ; 55: TRNG1
+  138 00000120 00000000        DCD              TRNG2_IRQHandler ; 56: TRNG2
+  139 00000124 00000000        DCD              TRNG3_IRQHandler ; 57: TRNG3
+  140 00000128         __Vectors_End
+  141 00000128         
+  142 00000128 00000128 
+                       __Vectors_Size
+                               EQU              __Vectors_End - __Vectors
+  143 00000128         
+  144 00000128                 AREA             |.text|, CODE, READONLY
+  145 00000000         
+  146 00000000         
+  147 00000000         ; Reset Handler
+  148 00000000         
+  149 00000000         Reset_Handler
+                               PROC
+  150 00000000                 EXPORT           Reset_Handler             [WEAK
+]
+  151 00000000                 IMPORT           SystemInit
+  152 00000000                 IMPORT           __main
+  153 00000000 4809            LDR              R0, =SystemInit
+
+
+
+ARM Macro Assembler    Page 5 
+
+
+  154 00000002 4780            BLX              R0
+  155 00000004 4809            LDR              R0, =__main
+  156 00000006 4700            BX               R0
+  157 00000008                 ENDP
+  158 00000008         
+  159 00000008         
+  160 00000008         ; Dummy Exception Handlers (infinite loops which can be 
+                       modified)
+  161 00000008         
+  162 00000008         NMI_Handler
+                               PROC
+  163 00000008                 EXPORT           NMI_Handler               [WEAK
+]
+  164 00000008 E7FE            B                .
+  165 0000000A                 ENDP
+  167 0000000A         HardFault_Handler
+                               PROC
+  168 0000000A                 EXPORT           HardFault_Handler         [WEAK
+]
+  169 0000000A E7FE            B                .
+  170 0000000C                 ENDP
+  172 0000000C         MemManage_Handler
+                               PROC
+  173 0000000C                 EXPORT           MemManage_Handler         [WEAK
+]
+  174 0000000C E7FE            B                .
+  175 0000000E                 ENDP
+  177 0000000E         BusFault_Handler
+                               PROC
+  178 0000000E                 EXPORT           BusFault_Handler          [WEAK
+]
+  179 0000000E E7FE            B                .
+  180 00000010                 ENDP
+  182 00000010         UsageFault_Handler
+                               PROC
+  183 00000010                 EXPORT           UsageFault_Handler        [WEAK
+]
+  184 00000010 E7FE            B                .
+  185 00000012                 ENDP
+  186 00000012         SVC_Handler
+                               PROC
+  187 00000012                 EXPORT           SVC_Handler               [WEAK
+]
+  188 00000012 E7FE            B                .
+  189 00000014                 ENDP
+  191 00000014         DebugMon_Handler
+                               PROC
+  192 00000014                 EXPORT           DebugMon_Handler          [WEAK
+]
+  193 00000014 E7FE            B                .
+  194 00000016                 ENDP
+  195 00000016         PendSV_Handler
+                               PROC
+  196 00000016                 EXPORT           PendSV_Handler            [WEAK
+]
+  197 00000016 E7FE            B                .
+  198 00000018                 ENDP
+  199 00000018         SysTick_Handler
+                               PROC
+
+
+
+ARM Macro Assembler    Page 6 
+
+
+  200 00000018                 EXPORT           SysTick_Handler           [WEAK
+]
+  201 00000018 E7FE            B                .
+  202 0000001A                 ENDP
+  203 0000001A         
+  204 0000001A         Default_Handler
+                               PROC
+  205 0000001A                 EXPORT           TRNG_IRQHandler           [WEAK
+]
+  206 0000001A                 EXPORT           SSP3_RT_IRQHandler        [WEAK
+]
+  207 0000001A                 EXPORT           SSP3_ROR_IRQHandler       [WEAK
+]
+  208 0000001A                 EXPORT           SSP3_TX_IRQHandler        [WEAK
+]
+  209 0000001A                 EXPORT           SSP3_RX_IRQHandler        [WEAK
+]
+  210 0000001A                 EXPORT           SSP3_COMBINE_IRQHandler   [WEAK
+]
+  211 0000001A                 EXPORT           SSP2_RT_IRQHandler        [WEAK
+]
+  212 0000001A                 EXPORT           SSP2_ROR_IRQHandler       [WEAK
+]
+  213 0000001A                 EXPORT           SSP2_TX_IRQHandler        [WEAK
+]
+  214 0000001A                 EXPORT           SSP2_RX_IRQHandler        [WEAK
+]
+  215 0000001A                 EXPORT           SSP2_COMBINE_IRQHandler   [WEAK
+]
+  216 0000001A                 EXPORT           SSP1_RT_IRQHandler        [WEAK
+]
+  217 0000001A                 EXPORT           SSP1_ROR_IRQHandler       [WEAK
+]
+  218 0000001A                 EXPORT           SSP1_TX_IRQHandler        [WEAK
+]
+  219 0000001A                 EXPORT           SSP1_RX_IRQHandler        [WEAK
+]
+  220 0000001A                 EXPORT           SSP1_COMBINE_IRQHandler   [WEAK
+]
+  221 0000001A                 EXPORT           SSP0_RT_IRQHandler        [WEAK
+]
+  222 0000001A                 EXPORT           SSP0_ROR_IRQHandler       [WEAK
+]
+  223 0000001A                 EXPORT           SSP0_TX_IRQHandler        [WEAK
+]
+  224 0000001A                 EXPORT           SSP0_RX_IRQHandler        [WEAK
+]
+  225 0000001A                 EXPORT           SSP0_COMBINE_IRQHandler   [WEAK
+]
+  226 0000001A                 EXPORT           GPDMA_COMBINE_IRQHandler  [WEAK
+]
+  227 0000001A                 EXPORT           GPDMA_TC_IRQHandler       [WEAK
+]
+  228 0000001A                 EXPORT           GPDMA_ERR_IRQHandler      [WEAK
+]
+  229 0000001A                 EXPORT           FLASH_CACHE_IRQHandler    [WEAK
+]
+  230 0000001A                 EXPORT           CC312_IRQHandler          [WEAK
+]
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+  231 0000001A                 EXPORT           PKI_RSA_IRQHandler        [WEAK
+]
+  232 0000001A                 EXPORT           TIMER_IRQHandler          [WEAK
+]
+  233 0000001A                 EXPORT           WDT_IRQHandler            [WEAK
+]
+  234 0000001A                 EXPORT           I2C1_IRQHandler           [WEAK
+]
+  235 0000001A                 EXPORT           I2C0_IRQHandler           [WEAK
+]
+  236 0000001A                 EXPORT           UART0_COMBINE_IRQHandler  [WEAK
+]
+  237 0000001A                 EXPORT           UART0_ERR_IRQHandler      [WEAK
+]
+  238 0000001A                 EXPORT           UART0_RT_IRQHandler       [WEAK
+]
+  239 0000001A                 EXPORT           UART0_TX_IRQHandler       [WEAK
+]
+  240 0000001A                 EXPORT           UART0_RX_IRQHandler       [WEAK
+]
+  241 0000001A                 EXPORT           UART0_MS_IRQHandler       [WEAK
+]
+  242 0000001A                 EXPORT           GPIO0_IRQHandler          [WEAK
+]
+  243 0000001A                 EXPORT           GPIO1_IRQHandler          [WEAK
+]
+  244 0000001A                 EXPORT           GPIO2_IRQHandler          [WEAK
+]
+  245 0000001A                 EXPORT           GPIO3_IRQHandler          [WEAK
+]
+  246 0000001A                 EXPORT           GPIO4_IRQHandler          [WEAK
+]
+  247 0000001A                 EXPORT           GPIO5_IRQHandler          [WEAK
+]
+  248 0000001A                 EXPORT           GPIO6_IRQHandler          [WEAK
+]
+  249 0000001A                 EXPORT           GPIO7_IRQHandler          [WEAK
+]
+  250 0000001A                 EXPORT           GPIO_COMBINE_IRQHandler   [WEAK
+]
+  251 0000001A                 EXPORT           eFLASH_IRQHandler         [WEAK
+]
+  252 0000001A                 EXPORT           UART1_COMBINE_IRQHandler  [WEAK
+]
+  253 0000001A                 EXPORT           UART1_ERR_IRQHandler      [WEAK
+]
+  254 0000001A                 EXPORT           UART1_RT_IRQHandler       [WEAK
+]
+  255 0000001A                 EXPORT           UART1_TX_IRQHandler       [WEAK
+]
+  256 0000001A                 EXPORT           UART1_RX_IRQHandler       [WEAK
+]
+  257 0000001A                 EXPORT           UART1_MS_IRQHandler       [WEAK
+]
+  258 0000001A                 EXPORT           TRNG0_IRQHandler          [WEAK
+]
+  259 0000001A                 EXPORT           TRNG1_IRQHandler          [WEAK
+]
+  260 0000001A                 EXPORT           TRNG2_IRQHandler          [WEAK
+
+
+
+ARM Macro Assembler    Page 8 
+
+
+]
+  261 0000001A                 EXPORT           TRNG3_IRQHandler          [WEAK
+]
+  262 0000001A         
+  263 0000001A         TRNG_IRQHandler
+  264 0000001A         SSP3_RT_IRQHandler
+  265 0000001A         SSP3_ROR_IRQHandler
+  266 0000001A         SSP3_TX_IRQHandler
+  267 0000001A         SSP3_RX_IRQHandler
+  268 0000001A         SSP3_COMBINE_IRQHandler
+  269 0000001A         SSP2_RT_IRQHandler
+  270 0000001A         SSP2_ROR_IRQHandler
+  271 0000001A         SSP2_TX_IRQHandler
+  272 0000001A         SSP2_RX_IRQHandler
+  273 0000001A         SSP2_COMBINE_IRQHandler
+  274 0000001A         SSP1_RT_IRQHandler
+  275 0000001A         SSP1_ROR_IRQHandler
+  276 0000001A         SSP1_TX_IRQHandler
+  277 0000001A         SSP1_RX_IRQHandler
+  278 0000001A         SSP1_COMBINE_IRQHandler
+  279 0000001A         SSP0_RT_IRQHandler
+  280 0000001A         SSP0_ROR_IRQHandler
+  281 0000001A         SSP0_TX_IRQHandler
+  282 0000001A         SSP0_RX_IRQHandler
+  283 0000001A         SSP0_COMBINE_IRQHandler
+  284 0000001A         GPDMA_COMBINE_IRQHandler
+  285 0000001A         GPDMA_TC_IRQHandler
+  286 0000001A         GPDMA_ERR_IRQHandler
+  287 0000001A         FLASH_CACHE_IRQHandler
+  288 0000001A         CC312_IRQHandler
+  289 0000001A         PKI_RSA_IRQHandler
+  290 0000001A         TIMER_IRQHandler
+  291 0000001A         WDT_IRQHandler
+  292 0000001A         I2C1_IRQHandler
+  293 0000001A         I2C0_IRQHandler
+  294 0000001A         UART0_COMBINE_IRQHandler
+  295 0000001A         UART0_ERR_IRQHandler
+  296 0000001A         UART0_RT_IRQHandler
+  297 0000001A         UART0_TX_IRQHandler
+  298 0000001A         UART0_RX_IRQHandler
+  299 0000001A         UART0_MS_IRQHandler
+  300 0000001A         GPIO0_IRQHandler
+  301 0000001A         GPIO1_IRQHandler
+  302 0000001A         GPIO2_IRQHandler
+  303 0000001A         GPIO3_IRQHandler
+  304 0000001A         GPIO4_IRQHandler
+  305 0000001A         GPIO5_IRQHandler
+  306 0000001A         GPIO6_IRQHandler
+  307 0000001A         GPIO7_IRQHandler
+  308 0000001A         GPIO_COMBINE_IRQHandler
+  309 0000001A         eFLASH_IRQHandler
+  310 0000001A         UART1_COMBINE_IRQHandler
+  311 0000001A         UART1_ERR_IRQHandler
+  312 0000001A         UART1_RT_IRQHandler
+  313 0000001A         UART1_TX_IRQHandler
+  314 0000001A         UART1_RX_IRQHandler
+  315 0000001A         UART1_MS_IRQHandler
+  316 0000001A         TRNG0_IRQHandler
+  317 0000001A         TRNG1_IRQHandler
+
+
+
+ARM Macro Assembler    Page 9 
+
+
+  318 0000001A         TRNG2_IRQHandler
+  319 0000001A         TRNG3_IRQHandler
+  320 0000001A E7FE            B                .
+  321 0000001C         
+  322 0000001C                 ENDP
+  323 0000001C         
+  324 0000001C         
+  325 0000001C                 ALIGN
+  326 0000001C         
+  327 0000001C         
+  328 0000001C         ; User Initial Stack & Heap
+  329 0000001C         
+  330 0000001C                 IF               :DEF:__MICROLIB
+  337 0000001C         
+  338 0000001C                 IMPORT           __use_two_region_memory
+  339 0000001C                 EXPORT           __user_initial_stackheap
+  340 0000001C         
+  341 0000001C         __user_initial_stackheap
+                               PROC
+  342 0000001C 4804            LDR              R0, =  Heap_Mem
+  343 0000001E 4905            LDR              R1, =(Stack_Mem + Stack_Size)
+  344 00000020 4A05            LDR              R2, = (Heap_Mem +  Heap_Size)
+  345 00000022 4B06            LDR              R3, = Stack_Mem
+  346 00000024 4770            BX               LR
+  347 00000026                 ENDP
+  348 00000026         
+  349 00000026 00 00           ALIGN
+  350 00000028         
+  351 00000028                 ENDIF
+  352 00000028         
+  353 00000028         
+  354 00000028                 END
+              00000000 
+              00000000 
+              00000000 
+              00001000 
+              00000C00 
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=SC300 --depend=.\object
+s\startup_m100.d -o.\objects\startup_m100.o -I.\RTE\Device\M100 -I.\RTE\_M100 -
+IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Driver\Include -IC:\Keil_v5\ARM\PACK
+\ARM\CMSIS\5.0.1\CMSIS\Include -IC:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18
+\Device\M100\Include -IC:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\G
+PDMA -IC:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\GPIO -IC:\Keil_v5
+\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\MISC -IC:\Keil_v5\ARM\PACK\ThinkTe
+ch\Mizar_DFP\2.0.18\Drivers\SSP -IC:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.1
+8\Drivers\USART --predefine="__UVISION_VERSION SETA 524" --predefine="_RTE_ SET
+A 1" --predefine="MIZAR_M100 SETA 1" --list=.\listings\startup_m100.lst RTE\Dev
+ice\M100\startup_M100.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+STACK 00000000
+
+Symbol: STACK
+   Definitions
+      At line 36 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: STACK unused
+Stack_Mem 00000000
+
+Symbol: Stack_Mem
+   Definitions
+      At line 37 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 343 in file RTE\Device\M100\startup_M100.s
+      At line 345 in file RTE\Device\M100\startup_M100.s
+
+__initial_sp 00001000
+
+Symbol: __initial_sp
+   Definitions
+      At line 38 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 64 in file RTE\Device\M100\startup_M100.s
+Comment: __initial_sp used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+HEAP 00000000
+
+Symbol: HEAP
+   Definitions
+      At line 47 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: HEAP unused
+Heap_Mem 00000000
+
+Symbol: Heap_Mem
+   Definitions
+      At line 49 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 342 in file RTE\Device\M100\startup_M100.s
+      At line 344 in file RTE\Device\M100\startup_M100.s
+
+__heap_base 00000000
+
+Symbol: __heap_base
+   Definitions
+      At line 48 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: __heap_base unused
+__heap_limit 00000C00
+
+Symbol: __heap_limit
+   Definitions
+      At line 50 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: __heap_limit unused
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+RESET 00000000
+
+Symbol: RESET
+   Definitions
+      At line 59 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: RESET unused
+__Vectors 00000000
+
+Symbol: __Vectors
+   Definitions
+      At line 64 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 60 in file RTE\Device\M100\startup_M100.s
+      At line 142 in file RTE\Device\M100\startup_M100.s
+
+__Vectors_End 00000128
+
+Symbol: __Vectors_End
+   Definitions
+      At line 140 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 61 in file RTE\Device\M100\startup_M100.s
+      At line 142 in file RTE\Device\M100\startup_M100.s
+
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 144 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: .text unused
+BusFault_Handler 0000000E
+
+Symbol: BusFault_Handler
+   Definitions
+      At line 177 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 69 in file RTE\Device\M100\startup_M100.s
+      At line 178 in file RTE\Device\M100\startup_M100.s
+
+CC312_IRQHandler 0000001A
+
+Symbol: CC312_IRQHandler
+   Definitions
+      At line 288 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 107 in file RTE\Device\M100\startup_M100.s
+      At line 230 in file RTE\Device\M100\startup_M100.s
+
+DebugMon_Handler 00000014
+
+Symbol: DebugMon_Handler
+   Definitions
+      At line 191 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 76 in file RTE\Device\M100\startup_M100.s
+      At line 192 in file RTE\Device\M100\startup_M100.s
+
+Default_Handler 0000001A
+
+Symbol: Default_Handler
+   Definitions
+      At line 204 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: Default_Handler unused
+FLASH_CACHE_IRQHandler 0000001A
+
+Symbol: FLASH_CACHE_IRQHandler
+   Definitions
+      At line 287 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 106 in file RTE\Device\M100\startup_M100.s
+      At line 229 in file RTE\Device\M100\startup_M100.s
+
+GPDMA_COMBINE_IRQHandler 0000001A
+
+Symbol: GPDMA_COMBINE_IRQHandler
+   Definitions
+      At line 284 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 103 in file RTE\Device\M100\startup_M100.s
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 226 in file RTE\Device\M100\startup_M100.s
+
+GPDMA_ERR_IRQHandler 0000001A
+
+Symbol: GPDMA_ERR_IRQHandler
+   Definitions
+      At line 286 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 105 in file RTE\Device\M100\startup_M100.s
+      At line 228 in file RTE\Device\M100\startup_M100.s
+
+GPDMA_TC_IRQHandler 0000001A
+
+Symbol: GPDMA_TC_IRQHandler
+   Definitions
+      At line 285 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 104 in file RTE\Device\M100\startup_M100.s
+      At line 227 in file RTE\Device\M100\startup_M100.s
+
+GPIO0_IRQHandler 0000001A
+
+Symbol: GPIO0_IRQHandler
+   Definitions
+      At line 300 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 120 in file RTE\Device\M100\startup_M100.s
+      At line 242 in file RTE\Device\M100\startup_M100.s
+
+GPIO1_IRQHandler 0000001A
+
+Symbol: GPIO1_IRQHandler
+   Definitions
+      At line 301 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 121 in file RTE\Device\M100\startup_M100.s
+      At line 243 in file RTE\Device\M100\startup_M100.s
+
+GPIO2_IRQHandler 0000001A
+
+Symbol: GPIO2_IRQHandler
+   Definitions
+      At line 302 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 122 in file RTE\Device\M100\startup_M100.s
+      At line 244 in file RTE\Device\M100\startup_M100.s
+
+GPIO3_IRQHandler 0000001A
+
+Symbol: GPIO3_IRQHandler
+   Definitions
+      At line 303 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 123 in file RTE\Device\M100\startup_M100.s
+      At line 245 in file RTE\Device\M100\startup_M100.s
+
+GPIO4_IRQHandler 0000001A
+
+Symbol: GPIO4_IRQHandler
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+   Definitions
+      At line 304 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 124 in file RTE\Device\M100\startup_M100.s
+      At line 246 in file RTE\Device\M100\startup_M100.s
+
+GPIO5_IRQHandler 0000001A
+
+Symbol: GPIO5_IRQHandler
+   Definitions
+      At line 305 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 125 in file RTE\Device\M100\startup_M100.s
+      At line 247 in file RTE\Device\M100\startup_M100.s
+
+GPIO6_IRQHandler 0000001A
+
+Symbol: GPIO6_IRQHandler
+   Definitions
+      At line 306 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 126 in file RTE\Device\M100\startup_M100.s
+      At line 248 in file RTE\Device\M100\startup_M100.s
+
+GPIO7_IRQHandler 0000001A
+
+Symbol: GPIO7_IRQHandler
+   Definitions
+      At line 307 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 127 in file RTE\Device\M100\startup_M100.s
+      At line 249 in file RTE\Device\M100\startup_M100.s
+
+GPIO_COMBINE_IRQHandler 0000001A
+
+Symbol: GPIO_COMBINE_IRQHandler
+   Definitions
+      At line 308 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 128 in file RTE\Device\M100\startup_M100.s
+      At line 250 in file RTE\Device\M100\startup_M100.s
+
+HardFault_Handler 0000000A
+
+Symbol: HardFault_Handler
+   Definitions
+      At line 167 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 67 in file RTE\Device\M100\startup_M100.s
+      At line 168 in file RTE\Device\M100\startup_M100.s
+
+I2C0_IRQHandler 0000001A
+
+Symbol: I2C0_IRQHandler
+   Definitions
+      At line 293 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 113 in file RTE\Device\M100\startup_M100.s
+      At line 235 in file RTE\Device\M100\startup_M100.s
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Relocatable symbols
+
+
+I2C1_IRQHandler 0000001A
+
+Symbol: I2C1_IRQHandler
+   Definitions
+      At line 292 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 112 in file RTE\Device\M100\startup_M100.s
+      At line 234 in file RTE\Device\M100\startup_M100.s
+
+MemManage_Handler 0000000C
+
+Symbol: MemManage_Handler
+   Definitions
+      At line 172 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 68 in file RTE\Device\M100\startup_M100.s
+      At line 173 in file RTE\Device\M100\startup_M100.s
+
+NMI_Handler 00000008
+
+Symbol: NMI_Handler
+   Definitions
+      At line 162 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 66 in file RTE\Device\M100\startup_M100.s
+      At line 163 in file RTE\Device\M100\startup_M100.s
+
+PKI_RSA_IRQHandler 0000001A
+
+Symbol: PKI_RSA_IRQHandler
+   Definitions
+      At line 289 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 108 in file RTE\Device\M100\startup_M100.s
+      At line 231 in file RTE\Device\M100\startup_M100.s
+
+PendSV_Handler 00000016
+
+Symbol: PendSV_Handler
+   Definitions
+      At line 195 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 78 in file RTE\Device\M100\startup_M100.s
+      At line 196 in file RTE\Device\M100\startup_M100.s
+
+Reset_Handler 00000000
+
+Symbol: Reset_Handler
+   Definitions
+      At line 149 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 65 in file RTE\Device\M100\startup_M100.s
+      At line 150 in file RTE\Device\M100\startup_M100.s
+
+SSP0_COMBINE_IRQHandler 0000001A
+
+Symbol: SSP0_COMBINE_IRQHandler
+   Definitions
+
+
+
+ARM Macro Assembler    Page 5 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 283 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 102 in file RTE\Device\M100\startup_M100.s
+      At line 225 in file RTE\Device\M100\startup_M100.s
+
+SSP0_ROR_IRQHandler 0000001A
+
+Symbol: SSP0_ROR_IRQHandler
+   Definitions
+      At line 280 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 99 in file RTE\Device\M100\startup_M100.s
+      At line 222 in file RTE\Device\M100\startup_M100.s
+
+SSP0_RT_IRQHandler 0000001A
+
+Symbol: SSP0_RT_IRQHandler
+   Definitions
+      At line 279 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 98 in file RTE\Device\M100\startup_M100.s
+      At line 221 in file RTE\Device\M100\startup_M100.s
+
+SSP0_RX_IRQHandler 0000001A
+
+Symbol: SSP0_RX_IRQHandler
+   Definitions
+      At line 282 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 101 in file RTE\Device\M100\startup_M100.s
+      At line 224 in file RTE\Device\M100\startup_M100.s
+
+SSP0_TX_IRQHandler 0000001A
+
+Symbol: SSP0_TX_IRQHandler
+   Definitions
+      At line 281 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 100 in file RTE\Device\M100\startup_M100.s
+      At line 223 in file RTE\Device\M100\startup_M100.s
+
+SSP1_COMBINE_IRQHandler 0000001A
+
+Symbol: SSP1_COMBINE_IRQHandler
+   Definitions
+      At line 278 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 97 in file RTE\Device\M100\startup_M100.s
+      At line 220 in file RTE\Device\M100\startup_M100.s
+
+SSP1_ROR_IRQHandler 0000001A
+
+Symbol: SSP1_ROR_IRQHandler
+   Definitions
+      At line 275 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 94 in file RTE\Device\M100\startup_M100.s
+      At line 217 in file RTE\Device\M100\startup_M100.s
+
+
+
+
+ARM Macro Assembler    Page 6 Alphabetic symbol ordering
+Relocatable symbols
+
+SSP1_RT_IRQHandler 0000001A
+
+Symbol: SSP1_RT_IRQHandler
+   Definitions
+      At line 274 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 93 in file RTE\Device\M100\startup_M100.s
+      At line 216 in file RTE\Device\M100\startup_M100.s
+
+SSP1_RX_IRQHandler 0000001A
+
+Symbol: SSP1_RX_IRQHandler
+   Definitions
+      At line 277 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 96 in file RTE\Device\M100\startup_M100.s
+      At line 219 in file RTE\Device\M100\startup_M100.s
+
+SSP1_TX_IRQHandler 0000001A
+
+Symbol: SSP1_TX_IRQHandler
+   Definitions
+      At line 276 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 95 in file RTE\Device\M100\startup_M100.s
+      At line 218 in file RTE\Device\M100\startup_M100.s
+
+SSP2_COMBINE_IRQHandler 0000001A
+
+Symbol: SSP2_COMBINE_IRQHandler
+   Definitions
+      At line 273 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 92 in file RTE\Device\M100\startup_M100.s
+      At line 215 in file RTE\Device\M100\startup_M100.s
+
+SSP2_ROR_IRQHandler 0000001A
+
+Symbol: SSP2_ROR_IRQHandler
+   Definitions
+      At line 270 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 89 in file RTE\Device\M100\startup_M100.s
+      At line 212 in file RTE\Device\M100\startup_M100.s
+
+SSP2_RT_IRQHandler 0000001A
+
+Symbol: SSP2_RT_IRQHandler
+   Definitions
+      At line 269 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 88 in file RTE\Device\M100\startup_M100.s
+      At line 211 in file RTE\Device\M100\startup_M100.s
+
+SSP2_RX_IRQHandler 0000001A
+
+Symbol: SSP2_RX_IRQHandler
+   Definitions
+      At line 272 in file RTE\Device\M100\startup_M100.s
+
+
+
+ARM Macro Assembler    Page 7 Alphabetic symbol ordering
+Relocatable symbols
+
+   Uses
+      At line 91 in file RTE\Device\M100\startup_M100.s
+      At line 214 in file RTE\Device\M100\startup_M100.s
+
+SSP2_TX_IRQHandler 0000001A
+
+Symbol: SSP2_TX_IRQHandler
+   Definitions
+      At line 271 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 90 in file RTE\Device\M100\startup_M100.s
+      At line 213 in file RTE\Device\M100\startup_M100.s
+
+SSP3_COMBINE_IRQHandler 0000001A
+
+Symbol: SSP3_COMBINE_IRQHandler
+   Definitions
+      At line 268 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 87 in file RTE\Device\M100\startup_M100.s
+      At line 210 in file RTE\Device\M100\startup_M100.s
+
+SSP3_ROR_IRQHandler 0000001A
+
+Symbol: SSP3_ROR_IRQHandler
+   Definitions
+      At line 265 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 84 in file RTE\Device\M100\startup_M100.s
+      At line 207 in file RTE\Device\M100\startup_M100.s
+
+SSP3_RT_IRQHandler 0000001A
+
+Symbol: SSP3_RT_IRQHandler
+   Definitions
+      At line 264 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 83 in file RTE\Device\M100\startup_M100.s
+      At line 206 in file RTE\Device\M100\startup_M100.s
+
+SSP3_RX_IRQHandler 0000001A
+
+Symbol: SSP3_RX_IRQHandler
+   Definitions
+      At line 267 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 86 in file RTE\Device\M100\startup_M100.s
+      At line 209 in file RTE\Device\M100\startup_M100.s
+
+SSP3_TX_IRQHandler 0000001A
+
+Symbol: SSP3_TX_IRQHandler
+   Definitions
+      At line 266 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 85 in file RTE\Device\M100\startup_M100.s
+      At line 208 in file RTE\Device\M100\startup_M100.s
+
+SVC_Handler 00000012
+
+
+
+ARM Macro Assembler    Page 8 Alphabetic symbol ordering
+Relocatable symbols
+
+
+Symbol: SVC_Handler
+   Definitions
+      At line 186 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 75 in file RTE\Device\M100\startup_M100.s
+      At line 187 in file RTE\Device\M100\startup_M100.s
+
+SysTick_Handler 00000018
+
+Symbol: SysTick_Handler
+   Definitions
+      At line 199 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 79 in file RTE\Device\M100\startup_M100.s
+      At line 200 in file RTE\Device\M100\startup_M100.s
+
+TIMER_IRQHandler 0000001A
+
+Symbol: TIMER_IRQHandler
+   Definitions
+      At line 290 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 109 in file RTE\Device\M100\startup_M100.s
+      At line 232 in file RTE\Device\M100\startup_M100.s
+
+TRNG0_IRQHandler 0000001A
+
+Symbol: TRNG0_IRQHandler
+   Definitions
+      At line 316 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 136 in file RTE\Device\M100\startup_M100.s
+      At line 258 in file RTE\Device\M100\startup_M100.s
+
+TRNG1_IRQHandler 0000001A
+
+Symbol: TRNG1_IRQHandler
+   Definitions
+      At line 317 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 137 in file RTE\Device\M100\startup_M100.s
+      At line 259 in file RTE\Device\M100\startup_M100.s
+
+TRNG2_IRQHandler 0000001A
+
+Symbol: TRNG2_IRQHandler
+   Definitions
+      At line 318 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 138 in file RTE\Device\M100\startup_M100.s
+      At line 260 in file RTE\Device\M100\startup_M100.s
+
+TRNG3_IRQHandler 0000001A
+
+Symbol: TRNG3_IRQHandler
+   Definitions
+      At line 319 in file RTE\Device\M100\startup_M100.s
+   Uses
+
+
+
+ARM Macro Assembler    Page 9 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 139 in file RTE\Device\M100\startup_M100.s
+      At line 261 in file RTE\Device\M100\startup_M100.s
+
+TRNG_IRQHandler 0000001A
+
+Symbol: TRNG_IRQHandler
+   Definitions
+      At line 263 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 82 in file RTE\Device\M100\startup_M100.s
+      At line 205 in file RTE\Device\M100\startup_M100.s
+
+UART0_COMBINE_IRQHandler 0000001A
+
+Symbol: UART0_COMBINE_IRQHandler
+   Definitions
+      At line 294 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 114 in file RTE\Device\M100\startup_M100.s
+      At line 236 in file RTE\Device\M100\startup_M100.s
+
+UART0_ERR_IRQHandler 0000001A
+
+Symbol: UART0_ERR_IRQHandler
+   Definitions
+      At line 295 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 115 in file RTE\Device\M100\startup_M100.s
+      At line 237 in file RTE\Device\M100\startup_M100.s
+
+UART0_MS_IRQHandler 0000001A
+
+Symbol: UART0_MS_IRQHandler
+   Definitions
+      At line 299 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 119 in file RTE\Device\M100\startup_M100.s
+      At line 241 in file RTE\Device\M100\startup_M100.s
+
+UART0_RT_IRQHandler 0000001A
+
+Symbol: UART0_RT_IRQHandler
+   Definitions
+      At line 296 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 116 in file RTE\Device\M100\startup_M100.s
+      At line 238 in file RTE\Device\M100\startup_M100.s
+
+UART0_RX_IRQHandler 0000001A
+
+Symbol: UART0_RX_IRQHandler
+   Definitions
+      At line 298 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 118 in file RTE\Device\M100\startup_M100.s
+      At line 240 in file RTE\Device\M100\startup_M100.s
+
+UART0_TX_IRQHandler 0000001A
+
+
+
+
+ARM Macro Assembler    Page 10 Alphabetic symbol ordering
+Relocatable symbols
+
+Symbol: UART0_TX_IRQHandler
+   Definitions
+      At line 297 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 117 in file RTE\Device\M100\startup_M100.s
+      At line 239 in file RTE\Device\M100\startup_M100.s
+
+UART1_COMBINE_IRQHandler 0000001A
+
+Symbol: UART1_COMBINE_IRQHandler
+   Definitions
+      At line 310 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 130 in file RTE\Device\M100\startup_M100.s
+      At line 252 in file RTE\Device\M100\startup_M100.s
+
+UART1_ERR_IRQHandler 0000001A
+
+Symbol: UART1_ERR_IRQHandler
+   Definitions
+      At line 311 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 131 in file RTE\Device\M100\startup_M100.s
+      At line 253 in file RTE\Device\M100\startup_M100.s
+
+UART1_MS_IRQHandler 0000001A
+
+Symbol: UART1_MS_IRQHandler
+   Definitions
+      At line 315 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 135 in file RTE\Device\M100\startup_M100.s
+      At line 257 in file RTE\Device\M100\startup_M100.s
+
+UART1_RT_IRQHandler 0000001A
+
+Symbol: UART1_RT_IRQHandler
+   Definitions
+      At line 312 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 132 in file RTE\Device\M100\startup_M100.s
+      At line 254 in file RTE\Device\M100\startup_M100.s
+
+UART1_RX_IRQHandler 0000001A
+
+Symbol: UART1_RX_IRQHandler
+   Definitions
+      At line 314 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 134 in file RTE\Device\M100\startup_M100.s
+      At line 256 in file RTE\Device\M100\startup_M100.s
+
+UART1_TX_IRQHandler 0000001A
+
+Symbol: UART1_TX_IRQHandler
+   Definitions
+      At line 313 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 133 in file RTE\Device\M100\startup_M100.s
+
+
+
+ARM Macro Assembler    Page 11 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 255 in file RTE\Device\M100\startup_M100.s
+
+UsageFault_Handler 00000010
+
+Symbol: UsageFault_Handler
+   Definitions
+      At line 182 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 70 in file RTE\Device\M100\startup_M100.s
+      At line 183 in file RTE\Device\M100\startup_M100.s
+
+WDT_IRQHandler 0000001A
+
+Symbol: WDT_IRQHandler
+   Definitions
+      At line 291 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 110 in file RTE\Device\M100\startup_M100.s
+      At line 233 in file RTE\Device\M100\startup_M100.s
+
+__user_initial_stackheap 0000001C
+
+Symbol: __user_initial_stackheap
+   Definitions
+      At line 341 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 339 in file RTE\Device\M100\startup_M100.s
+Comment: __user_initial_stackheap used once
+eFLASH_IRQHandler 0000001A
+
+Symbol: eFLASH_IRQHandler
+   Definitions
+      At line 309 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 129 in file RTE\Device\M100\startup_M100.s
+      At line 251 in file RTE\Device\M100\startup_M100.s
+
+70 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+Heap_Size 00000C00
+
+Symbol: Heap_Size
+   Definitions
+      At line 45 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 49 in file RTE\Device\M100\startup_M100.s
+      At line 344 in file RTE\Device\M100\startup_M100.s
+
+Stack_Size 00001000
+
+Symbol: Stack_Size
+   Definitions
+      At line 34 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 37 in file RTE\Device\M100\startup_M100.s
+      At line 343 in file RTE\Device\M100\startup_M100.s
+
+__Vectors_Size 00000128
+
+Symbol: __Vectors_Size
+   Definitions
+      At line 142 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 62 in file RTE\Device\M100\startup_M100.s
+Comment: __Vectors_Size used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+External symbols
+
+SystemInit 00000000
+
+Symbol: SystemInit
+   Definitions
+      At line 151 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 153 in file RTE\Device\M100\startup_M100.s
+Comment: SystemInit used once
+__main 00000000
+
+Symbol: __main
+   Definitions
+      At line 152 in file RTE\Device\M100\startup_M100.s
+   Uses
+      At line 155 in file RTE\Device\M100\startup_M100.s
+Comment: __main used once
+__use_two_region_memory 00000000
+
+Symbol: __use_two_region_memory
+   Definitions
+      At line 338 in file RTE\Device\M100\startup_M100.s
+   Uses
+      None
+Comment: __use_two_region_memory unused
+3 symbols
+423 symbols in table

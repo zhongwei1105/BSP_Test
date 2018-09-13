@@ -1,0 +1,214 @@
+/****************************************************************************************
+**  Filename :  ThinkTech_led.c
+**  Abstract :  This file implements led function.
+**  By       :  钟伟
+**  Date     :  2018-08-13 
+**  Changelog:1.First Create
+*****************************************************************************************/
+
+/*****************************************************************************************
+									Includes
+*****************************************************************************************/
+#include "GPIO_MIZAR.h"
+#include "ThinkTech_led.h" 
+/*****************************************************************************************
+								Variables definitions
+*****************************************************************************************/
+static TS_LED_RESOURCES		s_LED;
+/*****************************************************************************************
+							  Functions definitions
+*****************************************************************************************/
+/*****************************************************************************************
+* Function Name: LED_Init
+* Description  : LED初始化
+* Arguments    : NONE
+* Return Value : NONE
+******************************************************************************************/
+void LED_Init(void)
+{    	 
+	GPIO_PinSetDirection(LED0_PIN, GPIO_PIN_DIRECTION_OUTPUT); 	//初始化LED0
+	GPIO_PinSetDirection(LED1_PIN, GPIO_PIN_DIRECTION_OUTPUT); 	//初始化LED1
+	GPIO_PinSetDirection(LED2_PIN, GPIO_PIN_DIRECTION_OUTPUT); 	//初始化LED2
+	GPIO_PinSetDirection(LED3_PIN, GPIO_PIN_DIRECTION_OUTPUT); 	//初始化LED3
+	GPIO_PinSetDirection(LED4_PIN, GPIO_PIN_DIRECTION_OUTPUT); 	//初始化LED4
+
+	LED0_OFF();//灭灯
+	LED1_OFF();//灭灯
+	LED2_OFF();//灭灯
+	LED3_OFF();//灭灯
+	LED4_OFF();//灭灯
+}
+/*****************************************************************************************
+* Function Name: LED_On
+* Description  : 点亮LED
+* Arguments    : LED的ID 
+* Return Value : NONE
+******************************************************************************************/
+static void LED_On(TE_LED_ID e_LedId)
+{
+	switch(e_LedId)
+	{
+		case 0:
+			LED0_ON();
+		break;
+		
+		case 1:
+			LED1_ON();
+		break;
+		
+		case 2:
+			LED2_ON();
+		break;
+		
+		case 3:
+			LED3_ON();
+		break;
+		
+		case 4:
+			LED4_ON();
+		break;
+		
+		default: break;
+	}
+}
+/*****************************************************************************************
+* Function Name: LED_Off
+* Description  : 熄灭LED
+* Arguments    : LED的ID
+* Return Value : NONE
+******************************************************************************************/
+static void LED_Off(TE_LED_ID e_LedId)
+{
+	switch(e_LedId)
+	{
+		case 0:
+			LED0_OFF();
+		break;
+		
+		case 1:
+			LED1_OFF();
+		break;
+		
+        case 2:
+			LED2_OFF();
+		break;
+		
+		case 3:
+			LED3_OFF();
+		break;
+		
+		case 4:
+			LED4_OFF();
+		break;
+		
+		default: break;
+	}
+}
+/*****************************************************************************************
+* Function Name: LED_Clr
+* Description  : 熄灭全部LED
+* Arguments    : NONE
+* Return Value : NONE
+******************************************************************************************/
+void LED_Clr(void)
+{
+	uint8_t i;
+	
+	for(i=0; i<LED_ID_MAX; i++)
+	{
+		s_LED.State[i] = LED_OFF;
+		s_LED.Flash_Duty[i] = 0;
+		s_LED.Flash_Period[i] = 0;
+		s_LED.Flash_Times[i] = 0;
+		s_LED.Timer[i] = 0;
+	}
+}
+/*****************************************************************************************
+* Function Name: LED_Set
+* Description  : LED工作方式设置
+* Arguments    : e_LedId：ID / e_State：工作方式 / Duty:闪烁占空比 / Period:闪烁周期 / Times:闪烁次数
+* Return Value : NONE
+******************************************************************************************/
+void LED_Set(TE_LED_ID e_LedId, TE_LED_STATE e_State, uint16_t Duty, uint16_t Period, uint16_t Times)
+{
+	s_LED.State[e_LedId] = e_State;
+	s_LED.Flash_Duty[e_LedId] = Duty;
+	s_LED.Flash_Period[e_LedId] = Period;
+	s_LED.Flash_Times[e_LedId] = Times;
+	s_LED.Timer[e_LedId] = 0;
+}
+/*****************************************************************************************
+* Function Name: LED_Service
+* Description  : LED驱动，需放在10ms时间片中
+* Arguments    : NONE
+* Return Value : NONE
+******************************************************************************************/
+void LED_Drv(void)
+{
+	uint8_t i;
+
+	for(i = 0; i < LED_ID_MAX; i++)
+	{
+		switch(s_LED.State[i])
+		{
+			case LED_ON:
+				LED_On(i);
+			break;
+			
+			case LED_OFF:
+				LED_Off(i);
+			break;
+
+			case LED_FLASH:
+				if(s_LED.Timer[i] < s_LED.Flash_Duty[i])
+				{
+					LED_On(i);
+				}
+				else
+				{
+					LED_Off(i);
+				}
+				
+				if(s_LED.Timer[i] >= s_LED.Flash_Period[i])		//s_LED.Timer[i]表示累加的时间
+				{
+					s_LED.Timer[i] = 0; 
+					if(s_LED.Flash_Times[i] > 0)
+					{
+						s_LED.Flash_Times[i]--;
+					}
+					if(s_LED.Flash_Times[i] == 0)
+					{
+						s_LED.State[i] = LED_OFF;
+					}
+				}
+			break;
+			
+			case LED_KEEP_FLASHING:
+				if(s_LED.Timer[i] <= s_LED.Flash_Duty[i])
+				{
+					LED_On(i);
+				}
+				else
+				{
+					LED_Off(i);
+				}
+				if(s_LED.Timer[i] >= s_LED.Flash_Period[i])
+				{
+					s_LED.Timer[i] = 0;
+				}
+			break;
+			
+			default: 
+				LED_Off(i);
+			break;
+		}			
+	}
+    
+	for(i=0;i<LED_ID_MAX;i++)
+	{
+		s_LED.Timer[i] += 1;
+	}
+}
+/***********************************END OF FILE*******************************************/
+
+

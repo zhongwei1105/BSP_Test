@@ -1,0 +1,22 @@
+--cpu SC300
+".\objects\bsp_test.o"
+".\objects\thinktech_led.o"
+".\objects\thinktech_timer.o"
+".\objects\thinktech_key.o"
+".\objects\thinktech_esp8266.o"
+".\objects\thinktech_mcp2515.o"
+".\objects\thinktech_cmd.o"
+".\objects\thinktech_obd.o"
+".\objects\formula.o"
+".\objects\gpdma_mizar.o"
+".\objects\gpio_mizar.o"
+".\objects\misc_mizar.o"
+".\objects\ssp_mizar.o"
+".\objects\usart_mizar.o"
+".\objects\retarget_io.o"
+".\objects\startup_m100.o"
+".\objects\system_m100.o"
+--strict --scatter ".\Objects\BSP_Test.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\BSP_Test.map" -o .\Objects\BSP_Test.axf

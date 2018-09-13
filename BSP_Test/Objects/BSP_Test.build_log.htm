@@ -1,0 +1,116 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.24.2.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 11 PANZERS, 11, LIC=9N0X7-EZJFM-8WN2D-85MV7-ZGP92-JL7L8
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Professional  Version: 5.24.1
+Toolchain Path:  C:\Keil_v5\ARM\ARMCompiler6_10_1\Bin
+C Compiler:      Armcc.exe
+Assembler:       Armasm.exe V6.10.1
+Linker/Locator:  ArmLink.exe
+Library Manager: ArmAr.exe V6.10.1
+Hex Converter:   FromElf.exe
+CPU DLL:         SARMCM3.DLL V5.24.1
+Dialog DLL:      DCM.DLL V1.16.0.0
+Target DLL:      UL2CM3.DLL V1.160.3.0
+Dialog DLL:      TCM.DLL V1.32.0.0
+ 
+<h2>Project:</h2>
+C:\Users\PANZERS\Desktop\BSP_Test\BSP_Test.uvprojx
+Project File Date:  09/06/2018
+
+<h2>Output:</h2>
+*** Using Compiler 'V6.10.1', folder: 'C:\Keil_v5\ARM\ARMCompiler6_10_1\Bin'
+Build target 'M100'
+After Build - User command #1: C:\Keil_v5\ARM\ARMCompiler6_10_1\bin\fromelf.exe --bin -o .\Objects\BSP_Test.bin .\Objects\BSP_Test.axf
+".\Objects\BSP_Test.axf" - 0 Error(s), 0 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.0.1.pack
+                ARM.CMSIS.5.0.1
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.0.1
+   * Component: USART Version: 2.3.0
+   * Component: SPI Version: 2.2.0
+
+Package Vendor: ThinkTech
+                http://www.thinktech.net.cn/ThinkTech.Mizar_DFP.2.0.18.pack
+                ThinkTech.Mizar_DFP.2.0.18
+                ThinkTech Mizar Device Family Pack
+   * Component: Startup Version: 1.0.0
+   * Component: UART(PL011) Version: 1.0.0
+   * Component: SSP(PL022) Version: 1.0.0
+   * Component: MISC Version: 1.0.0
+   * Component: GPIO Version: 1.0.0
+   * Component: GPDMA Version: 1.0.0
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.ARM_Compiler.1.3.1.pack
+                Keil.ARM_Compiler.1.3.1
+                Keil ARM Compiler extensions for ARM Compiler 5 and ARM Compiler 6
+   * Component: STDOUT Variant: User Version: 1.2.0
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\Device\M100
+  .\RTE\_M100
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Driver\Include
+  C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.0.1\CMSIS\Include
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Device\M100\Include
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\GPDMA
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\GPIO
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\MISC
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\SSP
+  C:\Keil_v5\ARM\PACK\ThinkTech\Mizar_DFP\2.0.18\Drivers\USART
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ThinkTech::Device:Startup:1.0.0
+      Include file:  Device\M100\Include\system_M100.h
+      Include file:  Device\M100\Include\RTE_Device.h
+      Source file:   Device\M100\Source\system_M100.c
+      Source file:   Device\M100\Source\ARM\startup_M100.s
+
+   * Component: ThinkTech::CMSIS Driver:USART:UART(PL011):1.0.0
+      Include file:  Drivers\USART\USART_MIZAR.h
+      Source file:   Drivers\USART\USART_MIZAR.c
+
+   * Component: ThinkTech::CMSIS Driver:SPI:SSP(PL022):1.0.0
+      Source file:   Drivers\SSP\SSP_MIZAR.c
+      Include file:  Drivers\SSP\SSP_MIZAR.h
+
+   * Component: ThinkTech::CMSIS Driver:MISC:1.0.0
+      Source file:   Drivers\MISC\MISC_MIZAR.c
+      Include file:  Drivers\MISC\MISC_MIZAR.h
+
+   * Component: ThinkTech::CMSIS Driver:GPIO:1.0.0
+      Source file:   Drivers\GPIO\GPIO_MIZAR.c
+      Include file:  Drivers\GPIO\GPIO_MIZAR.h
+
+   * Component: ThinkTech::CMSIS Driver:GPDMA:1.0.0
+      Source file:   Drivers\GPDMA\GPDMA_MIZAR.c
+      Include file:  Drivers\GPDMA\GPDMA_MIZAR.h
+
+   * Component: Keil.ARM Compiler::Compiler:I/O:STDOUT:User:1.2.0
+      Source file:   Template\stdout_display.c
+      Source file:   Template\stdout_USART.c
+      Source file:   Source\retarget_io.c
+      Source file:   Template\stdout_user.c
+
+   * Component: ARM::CMSIS:CORE:5.0.1
+
+   * Component: ::CMSIS Driver:USART:2.3.0 (API)
+      Include file:  CMSIS\Driver\Include\Driver_USART.h
+
+   * Component: ::CMSIS Driver:SPI:2.2.0 (API)
+      Include file:  CMSIS\Driver\Include\Driver_SPI.h
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
